@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" user-scalable="no" />
+
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>로그인 하기</title>
+
+</head>
+
+<body cellpadding="0" cellspacing="0" marginleft="0" margintop="0" width="100%" height="100%">
+  <div class="card align-middle" style="width:20rem; border-radius:20px;">
+    <div class="card-title" style="margin-top:30px;">
+      <h2 class="card-title text-center" style="color:#113366;">로그인</h2>
+    </div>
+    <div class="card-body">
+      <form class="form-signin" method="POST" onSubmit="logincall();return false">
+        <h5 class="form-signin-heading">로그인 정보를 입력하세요</h5>
+        <label for="inputEmail" class="sr-only">아이디(ID)</label>
+        <input type="text" id="uid" class="form-control" placeholder="아이디(ID)" required autofocus><BR>
+        <label for="inputPassword" class="sr-only">비밀번호(PW)</label>
+        <input type="password" id="upw" class="form-control" placeholder="비밀번호(PW)" required><br>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> 아이디 기억
+          </label>
+        </div>
+        <button id="btn-Yes" class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
+      </form>
+
+    </div>
+  </div>
+
+  <div class="modal">
+  </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script>
+    function Movetoindex() {
+      alert('메인 페이지로 이동합니다!')
+      location.href = "index.html";
+    }
+  </script>
+  <script>// 웹 페이지 크기 및 위치 자동고정하기
+    window.onfocus = function () {
+    }
+    window.onload = function () {
+      window.focus(); // 현재 window 즉 익스플로러를 윈도우 최상단에 위치
+      window.moveTo(0, 0); // 웹 페이지의 창 위치를 0,0 (왼쪽 최상단) 으로 고정
+      window.resizeTo(1280, 800); // 웹페이지의 크기를 가로 1280 , 세로 800 으로 고정(확장 및 축소)
+    }
+  </script>
+  <!-- (2) LoginWithNaverId Javscript SDK -->
+  <script src="/api/js/naveridlogin_js_sdk_2.0.0.js"></script>
+
+  <p>
+  <div id="naverIdLogin"><a id="naverIdLogin_loginButton" href="#" role="button"><img src="/img/naver_login.PNG"
+        width=320></a></div>
+  <div style='display:none;'><a id="gnbLogin" href="#">로그인</a></div>
+  </p>
+
+
+  <!-- (3) LoginWithNaverId Javscript 설정 정보 및 초기화 -->
+  <script>
+    window.name = 'opener';
+    var naverLogin = new naver.LoginWithNaverId(
+      {
+        clientId: "quNo7XJsS2enasjMI1MJ",
+        callbackUrl: "https://chickpalace.netlify.app",
+        isPopup: true,
+        loginButton: { color: "green", type: 3, height: 60 }
+      }
+    );
+    /* (4) 네아로 로그인 정보를 초기화하기 위하여 init을 호출 */
+    naverLogin.init();
+
+    /* (4-1) 임의의 링크를 설정해줄 필요가 있는 경우 */
+    $("#gnbLogin").attr("href", naverLogin.generateAuthorizeUrl());
+
+    /* (5) 현재 로그인 상태를 확인 */
+    window.addEventListener('load', function () {
+      naverLogin.getLoginStatus(function (status) {
+        if (status) {
+          /* (6) 로그인 상태가 "true" 인 경우 로그인 버튼을 없애고 사용자 정보를 출력합니다. */
+          setLoginStatus();
+        }
+      });
+    });
+
+    /* (6) 로그인 상태가 "true" 인 경우 로그인 버튼을 없애고 사용자 정보를 출력합니다. */
+    function setLoginStatus() {
+      var profileImage = naverLogin.user.getProfileImage();
+      var nickName = naverLogin.user.getNickName();
+      var imageViewer = '';
+      if (profileImage) {
+        imageViewer += '<br><br><img src="' + profileImage + '" height=50 /> <p>';
+      }
+      $("#naverIdLogin_loginButton").html(imageViewer + nickName + '님 반갑습니다.</p>');
+      $("#gnbLogin").html("Logout");
+      $("#gnbLogin").attr("href", "#");
+      /* (7) 로그아웃 버튼을 설정하고 동작을 정의합니다. */
+      $("#gnbLogin").click(function (e) {
+        e.preventDefault();
+        naverLogin.logout();
+        location.replace('index.html');
+      });
+    }
+        </body>
+      </html>
